@@ -10,12 +10,16 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+
 @RepositoryRestResource
 public interface ArticleCommentRepository extends
         JpaRepository<ArticleComment, Long>,
         QuerydslPredicateExecutor<ArticleComment>,
         QuerydslBinderCustomizer<QArticleComment>
 {
+
+    List<ArticleComment> findByArticle_Id(Long articleId);
     @Override
     //검색 선택적
     default void customize(QuerydslBindings bindings, QArticleComment root){
@@ -24,7 +28,6 @@ public interface ArticleCommentRepository extends
         bindings.bind(root.content).first(StringExpression::containsIgnoreCase);// like '%${V}%'
         bindings.bind(root.createdAt).first(DateTimeExpression::eq);// like '%${V}%'
         bindings.bind(root.createdBy).first(StringExpression::containsIgnoreCase);// like '%${V}% '
-//        bindings.bind(root.title).first(StringExpression::containsIgnoreCase);// like ;${v}'
     }
 }
 
